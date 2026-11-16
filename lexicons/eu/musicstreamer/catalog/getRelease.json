@@ -1,0 +1,50 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.catalog.getRelease",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "A release with hydrated tracks.",
+      "parameters": {
+        "type": "params",
+        "required": [
+          "uri"
+        ],
+        "properties": {
+          "uri": {
+            "type": "string",
+            "format": "at-uri"
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "release",
+            "tracks"
+          ],
+          "properties": {
+            "release": {
+              "type": "ref",
+              "ref": "eu.musicstreamer.defs#releaseView"
+            },
+            "tracks": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "eu.musicstreamer.defs#trackView"
+              }
+            }
+          }
+        }
+      },
+      "errors": [
+        {
+          "name": "NotFound"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.catalog.getArtistReleases",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "Releases of one artist, newest first.",
+      "parameters": {
+        "type": "params",
+        "required": [
+          "actor"
+        ],
+        "properties": {
+          "actor": {
+            "type": "string",
+            "format": "at-identifier"
+          },
+          "cursor": {
+            "type": "string"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 25
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "releases"
+          ],
+          "properties": {
+            "cursor": {
+              "type": "string"
+            },
+            "releases": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "eu.musicstreamer.defs#releaseView"
+              }
+            }
+          }
+        }
+      },
+      "errors": [
+        {
+          "name": "NotFound"
+        }
+      ]
+    }
+  }
+}

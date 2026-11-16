@@ -1,0 +1,57 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.player.getPlayback",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "Playback URL for a track. Gated audio carries a short-lived grant and a playId; open audio is a plain URL and counts no stream. Requires auth.",
+      "parameters": {
+        "type": "params",
+        "required": [
+          "uri"
+        ],
+        "properties": {
+          "uri": {
+            "type": "string",
+            "format": "at-uri"
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "url"
+          ],
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "uri"
+            },
+            "playId": {
+              "type": "string"
+            },
+            "countAfterMs": {
+              "type": "integer"
+            }
+          }
+        }
+      },
+      "errors": [
+        {
+          "name": "NotSubscribed"
+        },
+        {
+          "name": "ArtistNotVerified"
+        },
+        {
+          "name": "NotLicensedInCountry"
+        },
+        {
+          "name": "TrackUnavailable"
+        }
+      ]
+    }
+  }
+}

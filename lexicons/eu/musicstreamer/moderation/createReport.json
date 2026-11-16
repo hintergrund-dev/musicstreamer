@@ -1,0 +1,54 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.moderation.createReport",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Report a track, release or artist.",
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "subject",
+            "reason"
+          ],
+          "properties": {
+            "subject": {
+              "type": "string",
+              "format": "at-uri",
+              "description": "AT URI or DID of the reported content."
+            },
+            "reason": {
+              "type": "string",
+              "knownValues": [
+                "ai-generated",
+                "society-member",
+                "copyright",
+                "other"
+              ]
+            },
+            "text": {
+              "type": "string",
+              "maxLength": 10000
+            }
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    }
+  }
+}

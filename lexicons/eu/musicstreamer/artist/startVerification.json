@@ -1,0 +1,22 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.artist.startVerification",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Returns the transfer instructions (EUR 1) and reference for verifying the caller as an artist. Requires an actor.profile record.",
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "ref",
+          "ref": "eu.musicstreamer.defs#bankDetails"
+        }
+      },
+      "errors": [
+        {
+          "name": "NoProfile"
+        }
+      ]
+    }
+  }
+}

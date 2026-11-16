@@ -1,0 +1,67 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.music.release",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "An album, EP or single.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": [
+          "title",
+          "type",
+          "tracks",
+          "createdAt"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 1280
+          },
+          "type": {
+            "type": "string",
+            "knownValues": [
+              "album",
+              "ep",
+              "single"
+            ]
+          },
+          "artwork": {
+            "type": "blob",
+            "accept": [
+              "image/*"
+            ],
+            "maxSize": 1000000
+          },
+          "releaseDate": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 10,
+            "description": "ISO date, YYYY-MM-DD"
+          },
+          "tracks": {
+            "type": "array",
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            },
+            "maxLength": 500
+          },
+          "upc": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 640
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    }
+  }
+}

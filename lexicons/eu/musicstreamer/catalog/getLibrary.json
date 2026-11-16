@@ -1,0 +1,44 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.catalog.getLibrary",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "The caller's likes, follows and playlists (most recent 100 of each). Requires auth.",
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "likes",
+            "follows",
+            "playlists"
+          ],
+          "properties": {
+            "likes": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "eu.musicstreamer.defs#recordView"
+              }
+            },
+            "follows": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "eu.musicstreamer.defs#recordView"
+              }
+            },
+            "playlists": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "eu.musicstreamer.defs#playlistView"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

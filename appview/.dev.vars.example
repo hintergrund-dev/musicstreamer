@@ -1,0 +1,13 @@
+# Secret names only. Set real values with `wrangler secret put <NAME>`; never commit them.
+ADMIN_SECRET=
+# ES256 private key as a JWK (JSON string). The public half is published in did.json.
+GRANT_PRIVATE_JWK=
+# Random string used to HMAC playId tokens.
+PLAY_TOKEN_SECRET=
+# Service account (publishes actor.verification and settlement.statement records).
+SERVICE_HANDLE=
+SERVICE_APP_PASSWORD=
+# Wise
+WISE_API_TOKEN=
+# Wise's webhook signing public key (PEM), from the Wise docs for the environment in use.
+WISE_WEBHOOK_PUBLIC_KEY=

@@ -1,0 +1,67 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.artist.getStatements",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "The caller's per-month, per-track statements.",
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "statements"
+          ],
+          "properties": {
+            "statements": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "month",
+                  "payoutCents",
+                  "tracks"
+                ],
+                "properties": {
+                  "month": {
+                    "type": "string"
+                  },
+                  "payoutCents": {
+                    "type": "integer"
+                  },
+                  "tracks": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "uri",
+                        "streams",
+                        "shareCents",
+                        "societyFeeCents"
+                      ],
+                      "properties": {
+                        "uri": {
+                          "type": "string",
+                          "format": "at-uri"
+                        },
+                        "streams": {
+                          "type": "integer"
+                        },
+                        "shareCents": {
+                          "type": "integer"
+                        },
+                        "societyFeeCents": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

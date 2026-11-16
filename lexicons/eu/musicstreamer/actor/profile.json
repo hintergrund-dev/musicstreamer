@@ -1,0 +1,104 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.actor.profile",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "An artist profile.",
+      "key": "literal:self",
+      "record": {
+        "type": "object",
+        "required": [
+          "displayName",
+          "kind"
+        ],
+        "properties": {
+          "displayName": {
+            "type": "string",
+            "maxLength": 640,
+            "maxGraphemes": 64
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 25600,
+            "maxGraphemes": 2560
+          },
+          "avatar": {
+            "type": "blob",
+            "accept": [
+              "image/*"
+            ],
+            "maxSize": 1000000
+          },
+          "banner": {
+            "type": "blob",
+            "accept": [
+              "image/*"
+            ],
+            "maxSize": 1000000
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "label",
+                "url"
+              ],
+              "properties": {
+                "label": {
+                  "type": "string",
+                  "maxLength": 640
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            },
+            "maxLength": 20
+          },
+          "genres": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 640
+            },
+            "maxLength": 20
+          },
+          "kind": {
+            "type": "string",
+            "knownValues": [
+              "person",
+              "collective"
+            ]
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "maxLength": 640
+                },
+                "did": {
+                  "type": "string",
+                  "format": "did"
+                }
+              }
+            },
+            "maxLength": 100
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    }
+  }
+}

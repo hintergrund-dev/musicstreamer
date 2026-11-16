@@ -1,0 +1,77 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.settlement.statement",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Public monthly settlement statement. Record key is the month, e.g. 2027-01.",
+      "key": "any",
+      "record": {
+        "type": "object",
+        "required": [
+          "month",
+          "revenueCents",
+          "societyFeesCents",
+          "paidOutCents",
+          "unallocatedCents",
+          "subscriberPeriods",
+          "tracks",
+          "createdAt"
+        ],
+        "properties": {
+          "month": {
+            "type": "string",
+            "minLength": 7,
+            "maxLength": 7
+          },
+          "revenueCents": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Net of VAT."
+          },
+          "societyFeesCents": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "paidOutCents": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "unallocatedCents": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Subscriber periods with no streams and shares of unavailable tracks; goes to the donation-funded cost account."
+          },
+          "subscriberPeriods": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "tracks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "uri",
+                "streams"
+              ],
+              "properties": {
+                "uri": {
+                  "type": "string",
+                  "format": "at-uri"
+                },
+                "streams": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    }
+  }
+}

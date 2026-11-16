@@ -1,0 +1,177 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.music.track",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A track with its audio sources.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": [
+          "title",
+          "artists",
+          "durationMs",
+          "audio",
+          "writers",
+          "createdAt"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 1280
+          },
+          "artists": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "maxLength": 640
+                },
+                "did": {
+                  "type": "string",
+                  "format": "did"
+                },
+                "role": {
+                  "type": "string",
+                  "maxLength": 640
+                }
+              }
+            },
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "durationMs": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "audio": {
+            "type": "array",
+            "items": {
+              "type": "ref",
+              "ref": "#audioSource"
+            },
+            "minLength": 1,
+            "maxLength": 10
+          },
+          "artwork": {
+            "type": "blob",
+            "accept": [
+              "image/*"
+            ],
+            "maxSize": 1000000
+          },
+          "explicit": {
+            "type": "boolean"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 640
+            },
+            "maxLength": 20
+          },
+          "releaseDate": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 10,
+            "description": "ISO date, YYYY-MM-DD"
+          },
+          "writers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "role"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "maxLength": 640
+                },
+                "role": {
+                  "type": "string",
+                  "knownValues": [
+                    "composer",
+                    "lyricist",
+                    "arranger"
+                  ]
+                },
+                "society": {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                "ipi": {
+                  "type": "string",
+                  "maxLength": 32
+                }
+              }
+            },
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "iswc": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "isrc": {
+            "type": "string",
+            "maxLength": 32
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    },
+    "audioSource": {
+      "type": "object",
+      "required": [
+        "url",
+        "mimeType",
+        "sha256",
+        "access"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Must support HTTP Range requests and CORS."
+        },
+        "mimeType": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "bitrate": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "minLength": 64,
+          "maxLength": 64,
+          "description": "Hex digest of the file. Pins the content because the URL is mutable."
+        },
+        "access": {
+          "type": "string",
+          "knownValues": [
+            "gated",
+            "open"
+          ]
+        }
+      }
+    }
+  }
+}

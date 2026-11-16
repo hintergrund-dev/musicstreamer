@@ -1,0 +1,35 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.artist.getStatus",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "The caller's verification and payout status.",
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "verified",
+            "banned",
+            "balanceCents"
+          ],
+          "properties": {
+            "verified": {
+              "type": "boolean"
+            },
+            "kind": {
+              "type": "string"
+            },
+            "banned": {
+              "type": "boolean"
+            },
+            "balanceCents": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    }
+  }
+}

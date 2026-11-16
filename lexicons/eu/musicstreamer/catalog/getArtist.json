@@ -1,0 +1,50 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.catalog.getArtist",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "Artist profile, verification and first page of releases.",
+      "parameters": {
+        "type": "params",
+        "required": [
+          "actor"
+        ],
+        "properties": {
+          "actor": {
+            "type": "string",
+            "format": "at-identifier"
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "artist",
+            "releases"
+          ],
+          "properties": {
+            "artist": {
+              "type": "ref",
+              "ref": "eu.musicstreamer.defs#profileView"
+            },
+            "releases": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "eu.musicstreamer.defs#releaseView"
+              }
+            }
+          }
+        }
+      },
+      "errors": [
+        {
+          "name": "NotFound"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.catalog.getPlaylist",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "A playlist with hydrated tracks.",
+      "parameters": {
+        "type": "params",
+        "required": [
+          "uri"
+        ],
+        "properties": {
+          "uri": {
+            "type": "string",
+            "format": "at-uri"
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "playlist",
+            "tracks"
+          ],
+          "properties": {
+            "playlist": {
+              "type": "ref",
+              "ref": "eu.musicstreamer.defs#playlistView"
+            },
+            "tracks": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "eu.musicstreamer.defs#trackView"
+              }
+            }
+          }
+        }
+      },
+      "errors": [
+        {
+          "name": "NotFound"
+        }
+      ]
+    }
+  }
+}

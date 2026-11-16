@@ -1,0 +1,28 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "musicstreamer-appview",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "vars": {
+    // Non-secret configuration. Replace the placeholders before deploying.
+    "SERVICE_ACCOUNT_DID": "did:plc:REPLACE_ME",
+    "SERVICE_PDS_URL": "https://pds.example.com",
+    "JETSTREAM_URL": "wss://jetstream2.us-east.bsky.network/subscribe",
+    "WISE_PROFILE_ID": "0",
+    "WISE_BALANCE_ID": "0",
+    "BANK_IBAN": "DE00000000000000000000",
+    "BANK_ACCOUNT_HOLDER": "REPLACE_ME"
+  },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "musicstreamer", "database_id": "00000000-0000-0000-0000-000000000000", "migrations_dir": "migrations" }
+  ],
+  "durable_objects": { "bindings": [{ "name": "JETSTREAM", "class_name": "Jetstream" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Jetstream"] }],
+  "queues": {
+    "producers": [{ "binding": "VERIFY_QUEUE", "queue": "musicstreamer-verify" }],
+    "consumers": [{ "queue": "musicstreamer-verify", "max_batch_size": 1, "max_retries": 3 }]
+  },
+  "triggers": { "crons": ["0 3 1 * *"] }
+}

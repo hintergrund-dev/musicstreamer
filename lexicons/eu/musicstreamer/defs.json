@@ -1,0 +1,173 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.defs",
+  "defs": {
+    "authorView": {
+      "type": "object",
+      "required": [
+        "did"
+      ],
+      "properties": {
+        "did": {
+          "type": "string",
+          "format": "did"
+        },
+        "handle": {
+          "type": "string",
+          "format": "handle"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "knownValues": [
+            "person",
+            "collective"
+          ]
+        }
+      }
+    },
+    "profileView": {
+      "type": "object",
+      "required": [
+        "author"
+      ],
+      "properties": {
+        "author": {
+          "type": "ref",
+          "ref": "#authorView"
+        },
+        "record": {
+          "type": "unknown"
+        }
+      }
+    },
+    "trackView": {
+      "type": "object",
+      "required": [
+        "uri",
+        "cid",
+        "author",
+        "record"
+      ],
+      "properties": {
+        "uri": {
+          "type": "string",
+          "format": "at-uri"
+        },
+        "cid": {
+          "type": "string",
+          "format": "cid"
+        },
+        "author": {
+          "type": "ref",
+          "ref": "#authorView"
+        },
+        "record": {
+          "type": "unknown"
+        }
+      }
+    },
+    "releaseView": {
+      "type": "object",
+      "required": [
+        "uri",
+        "cid",
+        "author",
+        "record"
+      ],
+      "properties": {
+        "uri": {
+          "type": "string",
+          "format": "at-uri"
+        },
+        "cid": {
+          "type": "string",
+          "format": "cid"
+        },
+        "author": {
+          "type": "ref",
+          "ref": "#authorView"
+        },
+        "record": {
+          "type": "unknown"
+        }
+      }
+    },
+    "playlistView": {
+      "type": "object",
+      "required": [
+        "uri",
+        "cid",
+        "author",
+        "record"
+      ],
+      "properties": {
+        "uri": {
+          "type": "string",
+          "format": "at-uri"
+        },
+        "cid": {
+          "type": "string",
+          "format": "cid"
+        },
+        "author": {
+          "type": "ref",
+          "ref": "#authorView"
+        },
+        "record": {
+          "type": "unknown"
+        }
+      }
+    },
+    "recordView": {
+      "type": "object",
+      "required": [
+        "uri",
+        "cid",
+        "record"
+      ],
+      "properties": {
+        "uri": {
+          "type": "string",
+          "format": "at-uri"
+        },
+        "cid": {
+          "type": "string",
+          "format": "cid"
+        },
+        "record": {
+          "type": "unknown"
+        }
+      }
+    },
+    "bankDetails": {
+      "type": "object",
+      "required": [
+        "iban",
+        "accountHolder",
+        "amountCents",
+        "currency",
+        "reference"
+      ],
+      "properties": {
+        "iban": {
+          "type": "string"
+        },
+        "accountHolder": {
+          "type": "string"
+        },
+        "amountCents": {
+          "type": "integer"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "reference": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

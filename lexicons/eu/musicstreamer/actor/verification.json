@@ -1,0 +1,36 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.actor.verification",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "Written by musicstreamer.eu to verify an artist. Deleting it revokes verification.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": [
+          "subject",
+          "kind",
+          "createdAt"
+        ],
+        "properties": {
+          "subject": {
+            "type": "string",
+            "format": "did"
+          },
+          "kind": {
+            "type": "string",
+            "knownValues": [
+              "person",
+              "collective"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    }
+  }
+}

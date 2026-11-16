@@ -1,0 +1,49 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.music.playlist",
+  "defs": {
+    "main": {
+      "type": "record",
+      "description": "A listener playlist.",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": [
+          "name",
+          "createdAt"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 640,
+            "maxGraphemes": 64
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 25600,
+            "maxGraphemes": 2560
+          },
+          "cover": {
+            "type": "blob",
+            "accept": [
+              "image/*"
+            ],
+            "maxSize": 1000000
+          },
+          "tracks": {
+            "type": "array",
+            "items": {
+              "type": "ref",
+              "ref": "com.atproto.repo.strongRef"
+            },
+            "maxLength": 1000
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    }
+  }
+}

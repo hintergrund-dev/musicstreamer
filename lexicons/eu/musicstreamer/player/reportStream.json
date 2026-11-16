@@ -1,0 +1,49 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.player.reportStream",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Report that the track has been played long enough. Counts one stream per playId.",
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "playId"
+          ],
+          "properties": {
+            "playId": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "counted"
+          ],
+          "properties": {
+            "counted": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "errors": [
+        {
+          "name": "InvalidPlayId"
+        },
+        {
+          "name": "TooEarly"
+        },
+        {
+          "name": "AlreadyCounted"
+        }
+      ]
+    }
+  }
+}
