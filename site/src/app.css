@@ -1,20 +1,21 @@
 :root {
-  --bg: #fbfaf7;
-  --fg: #1d1d1b;
-  --muted: #5f5e58;
-  --line: #c9c6bc;
-  --box: #f0eee7;
-  --accent: #1f5fbf;
+  --bg: #fbf8f9;
+  --fg: #1e1418;
+  --muted: #6f6268;
+  --line: #e0d3d8;
+  --box: #f4ecef;
+  --accent: #c8234f;
+  --display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
   color-scheme: light dark;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #151514;
-    --fg: #ecebe6;
-    --muted: #a3a198;
-    --line: #4a4943;
-    --box: #222220;
-    --accent: #7ba7ee;
+    --bg: #171114;
+    --fg: #f3eaed;
+    --muted: #b3a3a9;
+    --line: #46383e;
+    --box: #231a1e;
+    --accent: #ff7096;
   }
 }
 * { box-sizing: border-box; }
@@ -26,10 +27,12 @@ body {
 }
 main { max-width: 42rem; margin: 0 auto; padding: 0 16px 4rem; }
 header.bar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; font-size: 0.9rem; }
-header.bar a { color: var(--muted); }
-header.bar a[aria-current='true'] { color: var(--fg); font-weight: 600; }
-h1 { font-size: 2rem; line-height: 1.2; margin: 1rem 0; }
-h2 { font-size: 1.35rem; margin: 3rem 0 0.5rem; }
+header.bar a.lang { color: var(--muted); }
+h1 { font: 400 2.9rem/1.08 var(--display); letter-spacing: -0.01em; margin: 1rem 0; text-wrap: balance; }
+h2 { font: 400 1.9rem/1.15 var(--display); margin: 3rem 0 0.5rem; }
+.brand { display: inline-flex; align-items: center; gap: 0.6rem; font: 400 1.5rem/1 var(--display); color: var(--fg); text-decoration: none; }
+.brand i { font-style: normal; color: var(--accent); }
+@media (max-width: 480px) { h1 { font-size: 2.2rem; } }
 p, li { max-width: 40rem; }
 a { color: var(--accent); }
 .label {

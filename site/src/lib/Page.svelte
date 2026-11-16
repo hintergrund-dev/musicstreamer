@@ -15,8 +15,8 @@
 
 <main>
   <header class="bar">
-    <strong>musicstreamer.eu</strong>
-    <a href={c.nav.otherHref} hreflang={lang === 'de' ? 'en' : 'de'}>{c.nav.other}</a>
+    <a class="brand" href={lang === 'de' ? '/' : '/en'}><img src="/favicon.svg" alt="" width="30" height="30" />musicstreamer<i>.eu</i></a>
+    <a class="lang" href={c.nav.otherHref} hreflang={lang === 'de' ? 'en' : 'de'}>{c.nav.other}</a>
   </header>
 
   <span class="label">{c.label}</span>
