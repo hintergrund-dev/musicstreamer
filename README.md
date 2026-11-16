@@ -1,53 +1,40 @@
-<p>
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="brand/logo-dark.svg">
-    <img src="brand/logo-light.svg" alt="musicstreamer.eu" height="56">
-  </picture>
+<h1 align="center">
+  <picture><source media="(prefers-color-scheme: dark)" srcset="brand/logo-dark.svg"><img src="brand/logo-light.svg" alt="musicstreamer.eu" height="64"></picture>
+</h1>
+
+<p align="center"><strong>Music streaming where your 5 euros go to the artists you played.</strong><br>Artists host their own audio. An open appview on atproto counts streams and settles monthly. No cut.</p>
+
+<p align="center">
+  <a href="docs/plan.md">Plan</a> ·
+  <a href="lexicons/">Lexicons</a> ·
+  <a href="appview/">Appview</a> ·
+  <a href="brand/">Identity</a>
 </p>
 
-# musicstreamer.eu
-
-**Status: proposal.** Nothing here is live.
-
-An atproto-based music streaming appview. Artists host their own audio and publish metadata as
-atproto records in their own repo. Listeners pay €5 plus VAT per month by bank transfer, and each
-listener's €5 is split by stream count among the tracks that listener streamed. A non-profit
-association operates it and takes no cut.
-
-The specification is [`docs/plan.md`](docs/plan.md). Audio hosts implement
-[`docs/playback-grant.md`](docs/playback-grant.md).
+> **Status: proposal.** Nothing here is live. The plan, the lexicons and a first appview are public so they can be discussed.
 
 ## How it works
 
-**Architecture**
+### Where your 5 euros go
 
-```mermaid
-flowchart LR
-  subgraph AR["Artist"]
-    R[("atproto repo<br/>profile, track, release")]
-    H["Audio host<br/>serves files, checks the grant"]
-  end
-  subgraph AV["Appview (musicstreamer.eu)"]
-    I["Ingest<br/>Jetstream consumer"]
-    D[("D1 index<br/>catalogue, periods, streams")]
-    X["XRPC API"]
-    S["Monthly settlement"]
-    I --> D
-    X <--> D
-    S <--> D
-  end
-  P["Listener's player"]
-  B[("Bank account")]
-  R -- "records" --> I
-  P -- "getPlayback / reportStream" --> X
-  X -- "audio URL + signed grant" --> P
-  P -- "audio request + grant" --> H
-  P -. "5 EUR + VAT per month" .-> B
-  B -- "credit notification" --> X
-  S -. "payout batch" .-> AR
-```
+Each listener pays 5 € plus VAT per month by bank transfer. That listener's 5 € is divided among the tracks they streamed, by stream count. A stream counts after 30 seconds, or half the track if it is shorter than 60 seconds.
 
-**Playing a track**
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/diagrams/flow-dark.svg"><img src="brand/diagrams/flow-light.svg" alt="One listener's 5 euros split by their own streams" width="760"></picture></p>
+
+### Why that is different
+
+In a big-pot model all subscription money is pooled and shared by total streams, so your money also pays artists you never played. Here it only reaches the artists you chose.
+
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/diagrams/pot-dark.svg"><img src="brand/diagrams/pot-light.svg" alt="One big pot compared with a per-listener split" width="760"></picture></p>
+
+### Architecture
+
+Artists publish profile, track and release records in their own atproto repository and serve the audio from their own host. The appview indexes the records, signs short-lived playback grants, counts streams and settles each month. It never stores audio.
+
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="brand/diagrams/architecture-dark.svg"><img src="brand/diagrams/architecture-light.svg" alt="Artist repo and audio host, appview, player" width="760"></picture></p>
+
+<details>
+<summary><strong>Protocol detail: playing a track</strong></summary>
 
 ```mermaid
 sequenceDiagram
@@ -65,17 +52,16 @@ sequenceDiagram
   Note over A: one stream counted for this listener's period
 ```
 
-**Where one listener's 5 EUR goes**
+</details>
 
-```mermaid
-flowchart LR
-  L["Listener<br/>5 EUR net for one month"] --> SP{"Split by this<br/>listener's streams"}
-  SP -- "6 of 10 streams" --> A["Artist A<br/>3.00 EUR"]
-  SP -- "3 of 10 streams" --> B["Artist B<br/>1.50 EUR"]
-  SP -- "1 of 10 streams" --> C["Artist C<br/>0.50 EUR"]
-```
+## Principles
 
-Illustrative numbers. A stream counts after 30 seconds, or half the track if it is shorter than 60 seconds.
+| | |
+|---|---|
+| **Zero cut** | A non-profit operator takes nothing; fixed costs are covered by grants and donations. |
+| **Humans only** | Every artist is a verified person or collective. No AI-generated music. |
+| **Public statements** | Each month's totals and per-track stream counts are published as an atproto record. |
+| **Open** | Code and lexicons are open source; anyone can run another appview. |
 
 ## Layout
 

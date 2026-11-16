@@ -1,7 +1,4 @@
 <script lang="ts">
-  import Architecture from './Architecture.svelte';
-  import BigPot from './BigPot.svelte';
-  import MoneyFlow from './MoneyFlow.svelte';
   import { content, GITHUB, type Lang } from './content';
 
   let { lang }: { lang: Lang } = $props();
@@ -15,7 +12,7 @@
 
 <main>
   <header class="bar">
-    <a class="brand" href={lang === 'de' ? '/' : '/en'}><img src="/favicon.svg" alt="" width="30" height="30" />musicstreamer<i>.eu</i></a>
+    <a class="brand" href={lang === 'de' ? '/' : '/en'}><img src="/favicon.svg" alt="" width="30" height="30" /><span>musicstreamer<i>.eu</i></span></a>
     <a class="lang" href={c.nav.otherHref} hreflang={lang === 'de' ? 'en' : 'de'}>{c.nav.other}</a>
   </header>
 
@@ -26,24 +23,24 @@
   <h2>{c.flow.h}</h2>
   {#each c.flow.p as p}<p>{p}</p>{/each}
   <figure>
-    <MoneyFlow {lang} />
+    <img class="diagram" src="/diagrams/flow.{lang}.svg" alt={c.flow.d.title} width="760" height="300" />
     <figcaption>{c.flow.cap}</figcaption>
   </figure>
 
   <h2>{c.diff.h}</h2>
   {#each c.diff.p as p}<p>{p}</p>{/each}
   <figure>
-    <BigPot {lang} />
+    <img class="diagram" src="/diagrams/pot.{lang}.svg" alt={c.diff.d.title} width="760" height="330" />
     <figcaption>{c.diff.cap}</figcaption>
   </figure>
 
   <h2>{c.built.h}</h2>
   {#each c.built.p as p}<p>{p}</p>{/each}
-  <figure><Architecture {lang} /></figure>
+  <figure><img class="diagram" src="/diagrams/architecture.{lang}.svg" alt={c.built.d.title} width="760" height="290" /></figure>
 
   <h2>{c.principles.h}</h2>
-  <ul class="plain">
-    {#each c.principles.items as [name, text]}<li><strong>{name}.</strong> {text}</li>{/each}
+  <ul class="facts">
+    {#each c.principles.items as [name, text]}<li><strong>{name}</strong><span>{text}</span></li>{/each}
   </ul>
 
   <h2>{c.artists.h}</h2>
