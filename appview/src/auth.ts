@@ -1,7 +1,7 @@
 import { p256 } from '@noble/curves/nist.js';
 import { secp256k1 } from '@noble/curves/secp256k1.js';
-import { SERVICE_DID, XrpcError } from './env';
-import { b64uToBytes, utf8 } from './util';
+import { Env, SERVICE_DID, XrpcError } from './env';
+import { b64uToBytes, hex, utf8 } from './util';
 
 type DidDoc = {
   alsoKnownAs?: string[];
@@ -42,10 +42,8 @@ function parseMultikey(mb: string): { alg: 'ES256K' | 'ES256'; key: Uint8Array }
 }
 
 /** Verify an atproto inter-service JWT for method `lxm`; returns the issuer DID. */
-export async function verifyServiceAuth(req: Request, lxm: string): Promise<string> {
+export async function verifyServiceAuth(token: string, lxm: string): Promise<string> {
   const fail = (m: string) => new XrpcError(401, 'AuthRequired', m);
-  const token = req.headers.get('authorization')?.match(/^Bearer (.+)$/)?.[1];
-  if (!token) throw fail('Missing bearer token');
   const parts = token.split('.');
   if (parts.length !== 3) throw fail('Malformed token');
   try {
@@ -69,4 +67,20 @@ export async function verifyServiceAuth(req: Request, lxm: string): Promise<stri
   } catch (e) {
     throw e instanceof XrpcError ? e : fail('Invalid token');
   }
+}
+
+export const bearer = (req: Request) => req.headers.get('authorization')?.match(/^Bearer (.+)$/)?.[1];
+
+export const sha256Hex = async (s: string) => hex(await crypto.subtle.digest('SHA-256', utf8(s)));
+
+/** A service-auth JWT has two dots; a player token does not. Returns the caller's DID. */
+export async function authenticate(env: Env, token: string | undefined, lxm: string, only?: 'jwt' | 'session'): Promise<string> {
+  if (!token) throw new XrpcError(401, 'AuthRequired', 'Missing bearer token');
+  const isJwt = token.split('.').length === 3;
+  if (isJwt && only !== 'session') return verifyServiceAuth(token, lxm);
+  if (!isJwt && only !== 'jwt') {
+    const row = await env.DB.prepare('SELECT did FROM player_sessions WHERE token_hash=? AND expires_at>?').bind(await sha256Hex(token), Date.now()).first<{ did: string }>();
+    if (row) return row.did;
+  }
+  throw new XrpcError(401, 'AuthRequired', 'Invalid token');
 }

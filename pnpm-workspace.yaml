@@ -1,6 +1,12 @@
 packages:
   - appview
   - site
+  - player
+  - player/native-audio
 allowBuilds:
+  core-js: false
   esbuild: true
   workerd: true
+overrides:
+  # 2.12.5 is newer than pnpm's minimum release age
+  '@tauri-apps/api': ~2.12.4

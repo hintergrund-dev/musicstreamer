@@ -1,20 +1,25 @@
-import { Env } from './env';
+import { BASELINE, Env } from './env';
 import { grantUrl } from './grant';
+
 
 const MAX_ATTEMPTS = 3;
 
-/** Fetch the track's first audio source, hash it and compare with the declared sha256. */
+/** The track needs a baseline source (MP3 or AAC); every source is fetched, hashed and compared with its declared sha256. */
 async function check(env: Env, uri: string): Promise<boolean> {
   const row = await env.DB.prepare("SELECT json FROM records WHERE uri=? AND status='pending'").bind(uri).first<{ json: string }>();
   if (!row) return true; // deleted or already handled
-  const src = JSON.parse(row.json).audio[0];
-  if (!src.url.startsWith('https://')) return false;
-  const res = await fetch(src.access === 'gated' ? await grantUrl(env, src.url) : src.url);
-  if (!res.ok || !res.body) return false;
-  const digest = new crypto.DigestStream('SHA-256');
-  await res.body.pipeTo(digest);
-  const got = [...new Uint8Array(await digest.digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
-  return got === String(src.sha256).toLowerCase();
+  const audio: { url: string; mimeType: string; sha256: string; access: string }[] = JSON.parse(row.json).audio;
+  if (!audio.some((s) => BASELINE.includes(s.mimeType))) return false;
+  for (const src of audio) {
+    if (!src.url.startsWith('https://')) return false;
+    const res = await fetch(src.access === 'gated' ? await grantUrl(env, src.url) : src.url);
+    if (!res.ok || !res.body) return false;
+    const digest = new crypto.DigestStream('SHA-256');
+    await res.body.pipeTo(digest);
+    const got = [...new Uint8Array(await digest.digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
+    if (got !== String(src.sha256).toLowerCase()) return false;
+  }
+  return true;
 }
 
 export async function verifyBatch(batch: MessageBatch<{ uri: string }>, env: Env) {

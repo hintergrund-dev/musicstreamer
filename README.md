@@ -6,6 +6,7 @@
 
 <p align="center">
   <a href="docs/plan.md">Plan</a> ·
+  <a href="docs/player-plan.md">Player plan</a> ·
   <a href="lexicons/">Lexicons</a> ·
   <a href="appview/">Appview</a> ·
   <a href="brand/">Identity</a>
@@ -73,6 +74,7 @@ sequenceDiagram
 | `appview/` | Cloudflare Worker: XRPC API, Jetstream ingest (Durable Object), track verification (Queue), settlement (Cron), D1 schema in `migrations/0001_init.sql` |
 | `brand/` | logo, mark and the identity notes |
 | `site/` | static SvelteKit landing page (German and English) |
+| `player/` | the player apps: SvelteKit web app and artist studio, Tauri desktop shell (`src-tauri/`), Capacitor Android and iOS shells and native audio plugin; see `docs/player-plan.md` |
 
 ## Build
 
@@ -81,7 +83,7 @@ Requires Node and pnpm.
 ```sh
 pnpm install
 pnpm typecheck
-pnpm build        # wrangler deploy --dry-run for appview, vite build for site
+pnpm build        # wrangler deploy --dry-run for appview, vite build for site and player
 ```
 
 Nothing is deployed by these commands.

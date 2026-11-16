@@ -14,6 +14,14 @@
           "uri": {
             "type": "string",
             "format": "at-uri"
+          },
+          "accept": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxLength": 10,
+            "description": "Mime types the client can play. The first source of the track with an accepted type is returned, otherwise the MP3 or AAC baseline source."
           }
         }
       },
@@ -22,7 +30,8 @@
         "schema": {
           "type": "object",
           "required": [
-            "url"
+            "url",
+            "mimeType"
           ],
           "properties": {
             "url": {
@@ -34,6 +43,10 @@
             },
             "countAfterMs": {
               "type": "integer"
+            },
+            "mimeType": {
+              "type": "string",
+              "description": "Mime type of the returned source."
             }
           }
         }

@@ -1,0 +1,17 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.player.revokeSession",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Revokes the player token used to authenticate this call.",
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {}
+        }
+      }
+    }
+  }
+}

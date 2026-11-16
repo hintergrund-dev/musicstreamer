@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">musicstreamer</string>
+    <string name="title_activity_main">musicstreamer</string>
+    <string name="package_name">eu.musicstreamer.player</string>
+    <string name="custom_url_scheme">eu.musicstreamer.player</string>
+</resources>

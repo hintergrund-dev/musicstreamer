@@ -87,7 +87,7 @@ export async function verifyGrant(request) {
 
 - The grant is valid for five minutes from issue. A player that seeks or resumes after that needs a
   new grant from `player.getPlayback`; hosts should not extend the lifetime.
-- Serve CORS headers and `Accept-Ranges: bytes` as the lexicon requires.
+- Serve `Accept-Ranges: bytes` as the lexicon requires. CORS is not needed: players use an audio element or a native player, not `fetch`.
 - Open sources (`access: "open"`) carry no grant and need no check.
 - The appview itself fetches gated files with a grant for hash verification, so the check must not
   block requests that carry a valid grant from a non-browser client.

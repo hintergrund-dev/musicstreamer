@@ -5,3 +5,5 @@ build
 dist
 .dev.vars
 .env*
+
+!.env.example

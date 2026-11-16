@@ -1,0 +1,29 @@
+{
+  "lexicon": 1,
+  "id": "eu.musicstreamer.player.createSession",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Creates a player token (valid 30 days) for the caller. Requires atproto service auth; call once after sign-in. The appview stores only the token's SHA-256.",
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "token",
+            "expiresAt"
+          ],
+          "properties": {
+            "token": {
+              "type": "string"
+            },
+            "expiresAt": {
+              "type": "string",
+              "format": "datetime"
+            }
+          }
+        }
+      }
+    }
+  }
+}

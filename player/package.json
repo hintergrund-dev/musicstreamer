@@ -1,0 +1,40 @@
+{
+  "name": "@musicstreamer/player",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && tsc --noEmit -p src/service-worker",
+    "build": "vite build",
+    "tauri": "tauri",
+    "cap": "cap"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/cli": "^8.6.2",
+    "@capacitor/ios": "^8.6.2",
+    "@sveltejs/adapter-static": "^4.0.1",
+    "@sveltejs/kit": "^3.2.0",
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "@tauri-apps/cli": "^2.12.4",
+    "svelte": "^5.57.3",
+    "svelte-check": "^4.7.8",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.8"
+  },
+  "dependencies": {
+    "@atproto/oauth-client-browser": "^0.5.14",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/browser": "^8.0.5",
+    "@capacitor/core": "^8.6.2",
+    "@fontsource/instrument-serif": "^5.3.0",
+    "@musicstreamer/native-audio": "workspace:*",
+    "@tauri-apps/api": "~2.12.4",
+    "@tauri-apps/plugin-deep-link": "^2.6.3",
+    "@tauri-apps/plugin-updater": "^2.14.1",
+    "qrcode-generator": "^2.0.4",
+    "@tauri-apps/plugin-opener": "^2.5.0"
+  },
+  "imports": {
+    "#lib/*": "./src/lib/*"
+  }
+}

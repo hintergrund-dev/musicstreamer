@@ -144,11 +144,12 @@
         "url": {
           "type": "string",
           "format": "uri",
-          "description": "Must support HTTP Range requests and CORS."
+          "description": "Must support HTTP Range requests."
         },
         "mimeType": {
           "type": "string",
-          "maxLength": 128
+          "maxLength": 128,
+          "description": "At least one source of a track must be audio/mpeg (MP3) or audio/mp4 (AAC); the track check marks other tracks unavailable."
         },
         "bitrate": {
           "type": "integer",

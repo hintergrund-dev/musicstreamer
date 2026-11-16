@@ -1,12 +1,13 @@
 import { activePeriod } from './billing';
-import { verifyServiceAuth } from './auth';
-import { Env, XrpcError } from './env';
+import { authenticate, bearer, sha256Hex } from './auth';
+import { BASELINE, Env, XrpcError } from './env';
 import { grantUrl, readPlayId, signPlayId } from './grant';
 import { monthlyGross, isEuCountry } from './vat';
-import { makeCode } from './util';
+import { bytesToB64u, makeCode } from './util';
 
-type Ctx = { env: Env; did: string; p: URLSearchParams; body: any };
-type Method = { type: 'query' | 'procedure'; auth: 'optional' | 'required'; run: (c: Ctx) => Promise<unknown> };
+type Ctx = { env: Env; did: string; token?: string; p: URLSearchParams; body: any };
+// 'required' accepts a service-auth JWT or a player token; 'jwt' only the JWT, 'session' only the player token.
+type Method = { type: 'query' | 'procedure'; auth: 'optional' | 'required' | 'jwt' | 'session'; run: (c: Ctx) => Promise<unknown> };
 type Rec = { uri: string; cid: string; did: string; json: string; collection: string; sort: string };
 
 const NS = 'eu.musicstreamer.';
@@ -122,8 +123,10 @@ export const methods: Record<string, Method> = {
     if (!t.verified || t.banned) throw new XrpcError(403, 'ArtistNotVerified');
     if (t.status !== 'ok' || t.taken || t.inactive) throw new XrpcError(404, 'TrackUnavailable');
     const track = JSON.parse(t.json);
-    const src = track.audio[0];
-    if (src.access === 'open') return { url: src.url };
+    const accept = p.getAll('accept');
+    const src = track.audio.find((s: any) => accept.includes(s.mimeType)) ?? track.audio.find((s: any) => BASELINE.includes(s.mimeType));
+    if (!src) throw new XrpcError(404, 'TrackUnavailable');
+    if (src.access === 'open') return { url: src.url, mimeType: src.mimeType };
 
     const sub = await env.DB.prepare('SELECT country FROM subscribers WHERE did=?').bind(did).first<{ country: string }>();
     const period = sub && (await activePeriod(env, did));
@@ -136,9 +139,23 @@ export const methods: Record<string, Method> = {
     const countAfterMs = Math.min(30_000, Math.floor(track.durationMs / 2));
     return {
       url: await grantUrl(env, src.url),
+      mimeType: src.mimeType,
       playId: await signPlayId(env, { d: did, t: uri, p: period.id, i: Date.now(), c: countAfterMs }),
       countAfterMs,
     };
+  } },
+  [NS + 'player.createSession']: { type: 'procedure', auth: 'jwt', run: async ({ env, did }) => {
+    const token = bytesToB64u(crypto.getRandomValues(new Uint8Array(32)));
+    const expiresAt = Date.now() + 30 * 86_400_000;
+    await env.DB.batch([
+      env.DB.prepare('DELETE FROM player_sessions WHERE expires_at<?').bind(Date.now()),
+      env.DB.prepare('INSERT INTO player_sessions (token_hash, did, expires_at) VALUES (?,?,?)').bind(await sha256Hex(token), did, expiresAt),
+    ]);
+    return { token, expiresAt: new Date(expiresAt).toISOString() };
+  } },
+  [NS + 'player.revokeSession']: { type: 'procedure', auth: 'session', run: async ({ env, token }) => {
+    await env.DB.prepare('DELETE FROM player_sessions WHERE token_hash=?').bind(await sha256Hex(token!)).run();
+    return {};
   } },
   [NS + 'player.reportStream']: { type: 'procedure', auth: 'required', run: async ({ env, did, body }) => {
     const t = await readPlayId(env, str(body?.playId, 'playId', 1000));
@@ -199,8 +216,11 @@ export async function handleXrpc(env: Env, req: Request, nsid: string): Promise<
   const m = methods[nsid];
   if (!m) throw new XrpcError(501, 'MethodNotImplemented');
   if (req.method !== (m.type === 'query' ? 'GET' : 'POST')) throw new XrpcError(405, 'InvalidRequest', 'Wrong HTTP method');
-  const did = m.auth === 'required' || req.headers.has('authorization') ? await verifyServiceAuth(req, nsid) : '';
-  let body: unknown;
-  if (m.type === 'procedure') body = await req.json().catch(() => { throw bad('Body must be JSON'); });
-  return Response.json(await m.run({ env, did, p: new URL(req.url).searchParams, body }));
+  const token = bearer(req);
+  const did = m.auth !== 'optional' || req.headers.has('authorization')
+    ? await authenticate(env, token, nsid, m.auth === 'jwt' || m.auth === 'session' ? m.auth : undefined)
+    : '';
+  // Procedures without an input (createSession, revokeSession, startVerification) may send an empty body.
+  const body = m.type === 'procedure' ? await req.json().catch(() => ({})) : undefined;
+  return Response.json(await m.run({ env, did, token, p: new URL(req.url).searchParams, body }));
 }

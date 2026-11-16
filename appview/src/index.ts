@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import { admin } from './admin';
 import { processCredits } from './billing';
 import { Env, XrpcError } from './env';
@@ -12,6 +13,9 @@ import { verifyWebhook } from './wise';
 const app = new Hono<{ Bindings: Env }>();
 
 app.get('/.well-known/did.json', (c) => c.json(didDocument(c.env)));
+
+// The player web app and the desktop and mobile shells call the API from other origins. No cookies are used, so any origin is fine.
+app.use('/xrpc/*', cors({ origin: '*', allowHeaders: ['authorization', 'content-type', 'atproto-proxy'], maxAge: 86400 }));
 
 app.all('/xrpc/:nsid', (c) => handleXrpc(c.env, c.req.raw, c.req.param('nsid')));
 

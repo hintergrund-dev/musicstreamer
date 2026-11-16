@@ -113,3 +113,10 @@ CREATE TABLE reports (
   text TEXT,
   at INTEGER NOT NULL
 );
+
+-- Player tokens (created after sign-in). Only the SHA-256 of the token is stored.
+CREATE TABLE player_sessions (
+  token_hash TEXT PRIMARY KEY,
+  did TEXT NOT NULL,
+  expires_at INTEGER NOT NULL
+);

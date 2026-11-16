@@ -22,6 +22,8 @@ export interface Env {
 
 export const SERVICE_DID = 'did:web:musicstreamer.eu';
 export const NET_CENTS = 500;
+/** Every track needs a source in one of these formats (MP3 or AAC). */
+export const BASELINE = ['audio/mpeg', 'audio/mp4'];
 
 export class XrpcError extends Error {
   constructor(public status: number, public error: string, message?: string) {

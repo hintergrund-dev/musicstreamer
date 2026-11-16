@@ -54,7 +54,8 @@ JSON files live in `lexicons/eu/musicstreamer/...`, one file per NSID.
 - `createdAt` datetime (required)
 
 `#audioSource` object
-- `url` uri (required) — must support HTTP Range requests and CORS
+- `url` uri (required) — must support HTTP Range requests
+- `mimeType`: at least one source of every track must be `audio/mpeg` (MP3) or `audio/mp4` (AAC)
 - `mimeType` string (required)
 - `bitrate` integer, `size` integer
 - `sha256` string (required, hex) — pins the content because the URL is mutable
@@ -96,7 +97,11 @@ public and writable by their owner, so none of this can live there.
 
 All methods are under `eu.musicstreamer.*` and each has a lexicon file.
 
-Auth: **atproto service auth**. The client sends the request through the user's PDS with the
+Auth: **atproto service auth** or a **player token**. Every authenticated method accepts either
+`Authorization: Bearer <service-auth JWT>` or `Authorization: Bearer <player token>` (a JWT has two
+dots). Apps call `player.createSession` once with service auth and use the token afterwards; see
+`docs/player-plan.md`. The appview answers CORS preflights on `/xrpc/*` (any origin, no cookies), so
+browser apps can call it directly. Service auth: the client sends the request through the user's PDS with the
 `atproto-proxy: did:web:musicstreamer.eu#musicstreamer_appview` header; the PDS adds a signed
 inter-service JWT (`iss` = user DID, `aud` = `did:web:musicstreamer.eu`, `lxm` = method NSID).
 The appview resolves the user's DID document and verifies the signature. The appview itself needs
@@ -112,7 +117,9 @@ no OAuth client. Catalogue queries work without auth.
 | `catalog.getNewReleases` | query | optional | paginated, newest first |
 | `catalog.getPlaylist` | query | optional | playlist with hydrated tracks |
 | `catalog.getLibrary` | query | required | caller's likes, follows, playlists |
-| `player.getPlayback` | query | required | returns `{ url, playId, countAfterMs }` or an error |
+| `player.createSession` | procedure | service auth | returns `{ token, expiresAt }`; the player token is valid 30 days, only its SHA-256 is stored |
+| `player.revokeSession` | procedure | player token | deletes the token used for the call |
+| `player.getPlayback` | query | required | optional `accept` (mime types); returns `{ url, mimeType, playId, countAfterMs }` or an error |
 | `player.reportStream` | procedure | required | input `{ playId }`; counts the stream |
 | `billing.getPaymentInstructions` | procedure | required | input `{ country }`; returns IBAN, amount, reference |
 | `billing.getStatus` | query | required | `{ paidUntil, country }` |
@@ -123,7 +130,8 @@ no OAuth client. Catalogue queries work without auth.
 
 `player.getPlayback` errors: `NotSubscribed`, `ArtistNotVerified`, `NotLicensedInCountry`,
 `TrackUnavailable`. For `open` audio it returns the plain URL without requiring a subscription
-and no stream is counted.
+and no stream is counted. The source returned is the first whose `mimeType` is in `accept`,
+otherwise the baseline (MP3 or AAC) source.
 
 ## 4. Appview
 
@@ -138,7 +146,8 @@ Runs on Cloudflare: one Worker, one Durable Object, one Queue, D1, Cron.
 - Account and identity events update handle and takedown/deactivation status.
 
 ### Track verification (Queue)
-- For each new or changed track: fetch the first audio source, compute sha256, compare.
+- For each new or changed track: it must have a baseline source (`audio/mpeg` or `audio/mp4`),
+  otherwise it is marked unavailable. Fetch every audio source, compute sha256, compare.
 - `gated` sources are fetched with a grant the appview signs for itself.
 - Tracks that fail are marked unavailable.
 
@@ -219,7 +228,7 @@ Diagrams are inline SVG and work in light and dark mode.
 
 ## 6. Out of scope for now
 
-- The listener web player and artist upload UI.
+- Artist hosting and upload; the listener and artist apps are specified in `docs/player-plan.md`.
 - The audio host integration (later part of hintergrund.cloud); only its protocol is specified.
 - Per-track payout splits between several payees.
 - Previews for non-subscribers.
